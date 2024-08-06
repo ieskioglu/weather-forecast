@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: weatherDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: ./backend/weather-forecast
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/weatherDb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      WEATHER_VISUALCROSSING_API_KEY: 42Y5EFHYB25CHH8A5C32BJV74
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend/weather-forecast-app
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      API_URL: http://backend:8080
+    restart: always
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

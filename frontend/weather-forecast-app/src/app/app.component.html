@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <mat-card appearance="outlined">
+        <mat-card-content>
+          <div class="row">
+            <div class="col-12 col-md-3">
+              <mat-form-field>
+                <mat-label>Select City</mat-label>
+                <mat-select [(ngModel)]="selectedCityId">
+                  @for (city of cities; track city) {
+                  <mat-option [value]="city.id">{{ city.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-md-3">
+              <mat-form-field>
+                <mat-label>Select Date Range</mat-label>
+                <mat-date-range-input [rangePicker]="picker" [min]="minDate" [max]="maxDate">
+                  <input matStartDate placeholder="Start date"  [(ngModel)]="startDate" />
+                  <input matEndDate placeholder="End date" [(ngModel)]="endDate" />
+                </mat-date-range-input>
+                <mat-datepicker-toggle
+                  matIconSuffix
+                  [for]="picker"
+                ></mat-datepicker-toggle>
+                <mat-date-range-picker #picker></mat-date-range-picker>
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-md-3">
+              <mat-form-field>
+                <mat-label>Select Temperature Type</mat-label>
+                <mat-select [(ngModel)]="selectedTemperature">
+                  <mat-option [value]="temperatureTypes.C">°C</mat-option>
+                  <mat-option [value]="temperatureTypes.F">°F</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-12 col-md-3">
+              <button mat-button (click)="fetchData($event)">Search</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content>
+          <div class="row">
+            @if (weathers && weathers.length > 0) {
+              @for (weather of weathers; track weather) {
+                <div class="col">
+                  <mat-card appearance="outlined">
+                    <mat-card-header>{{weather.date | date : 'dd-MM-yyyy'}}</mat-card-header>
+                    <mat-card-content><b>Temperature: </b>{{weather.temp | number :'1.2-2'}} °{{temperatureTypes[submittedTemperature]}}</mat-card-content>
+                  </mat-card>
+                </div>
+              }
+            }@else {
+              <div class="col-12">
+                <p>Weather data not found</p>
+              </div>
+            }
+          </div>
+          
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
